@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>mipo</title>
+    <script src="jquery-1.8.3.min.js"></script>
+    <script src="jquery.fittext.js"></script>
+    <script>
+var start = new Date;
+var inBreak = false;
+var late = false;
+var pomodoroSeconds = 1501;
+var breakSeconds = 300;
+
+function tick() {
+  if (inBreak) {
+    var totalSeconds = breakSeconds - (new Date - start) / 1000;
+  } else {
+    var totalSeconds = pomodoroSeconds - (new Date - start) / 1000;
+  }
+  late = totalSeconds < 0;
+  if (late) {
+    var sign = '-';
+    totalSeconds = Math.abs(totalSeconds) + 1;
+    $('body').addClass('late');
+  } else {
+    var sign = '';
+    $('body').removeClass('late');
+  }
+  if (inBreak) {
+    $('body').addClass('break');
+  } else {
+    $('body').removeClass('break');
+  }
+  var minutes = Math.floor(totalSeconds / 60);
+  var seconds = Math.floor(totalSeconds - minutes * 60);
+  $('#time').text(sign + minutes + ':' + ((seconds < 10) ? '0' : '') + seconds);
+}
+
+$(function() {
+  $("#time").fitText(0.298);
+  tick();
+  setInterval(tick, 1000);
+  $('body').bind('keypress', function(e) {
+    if (e.which == 32) {
+      if (late) {
+        inBreak = !inBreak;
+        start = new Date;
+        tick();
+      }
+    }
+  });
+  $('body').keyup(function(e) {
+    if (e.which == 27) {
+      inBreak = false;
+      start = new Date;
+      tick();
+    }
+  });
+});
+    </script>
+    <style>
+#time {
+    display: block;
+    font-family: Tahoma, sans-serif;
+    font-weight: bold;
+    margin: 10% 5%;
+    text-align: center;
+    width: 90%;
+}
+body {
+    background: #343;
+    color: #ccc;
+}
+.late {
+    background: #f33;
+    color: #fff;
+}
+.break {
+    background: #ddd;
+    color: #777;
+}
+.break.late {
+    background: #fdd;
+    color: #966;
+}
+    </style>
+  </head>
+  <body>
+    <div id="time"></div>
+  </body>
+</html>
