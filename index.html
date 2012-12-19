@@ -12,19 +12,23 @@ var late = false;
 var disabled = false;
 var pomodoroSeconds = 1501;
 var breakSeconds = 300;
+var disableAfterSeconds = 600;
 
 function tick() {
+  if (inBreak) {
+    var totalSeconds = breakSeconds - (new Date - start) / 1000;
+  } else {
+    var totalSeconds = pomodoroSeconds - (new Date - start) / 1000;
+  }
+  if (totalSeconds + disableAfterSeconds < 0) {
+    disabled = true;
+  }
   if (disabled) {
     $('body').attr('class', 'disabled');
     $('#time').text('');
     return;
   }
   $('body').removeClass('disabled');
-  if (inBreak) {
-    var totalSeconds = breakSeconds - (new Date - start) / 1000;
-  } else {
-    var totalSeconds = pomodoroSeconds - (new Date - start) / 1000;
-  }
   late = totalSeconds < 0;
   if (late) {
     var sign = '-';
