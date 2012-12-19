@@ -3,3 +3,5 @@ A super simple [Pomodoro](http://en.wikipedia.org/wiki/Pomodoro_Technique) timer
 The space key starts the break after a pomodoro has ended, and vice versa.
 
 The escape key aborts the current pomodoro and starts a new one.
+
+The backspace key disables the timer and makes the screen go blank.

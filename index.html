@@ -9,10 +9,17 @@
 var start = new Date;
 var inBreak = false;
 var late = false;
+var disabled = false;
 var pomodoroSeconds = 1501;
 var breakSeconds = 300;
 
 function tick() {
+  if (disabled) {
+    $('body').attr('class', 'disabled');
+    $('#time').text('');
+    return;
+  }
+  $('body').removeClass('disabled');
   if (inBreak) {
     var totalSeconds = breakSeconds - (new Date - start) / 1000;
   } else {
@@ -43,15 +50,24 @@ $(function() {
   setInterval(tick, 1000);
   $('body').bind('keypress', function(e) {
     if (e.which == 32) {
-      if (late) {
+      if (disabled) {
+        disabled = false;
+        inBreak = false;
+        start = new Date;
+        tick();
+      } else if (late) {
         inBreak = !inBreak;
         start = new Date;
         tick();
       }
+    } else if (e.which == 8) {
+      disabled = true;
+      tick();
     }
   });
   $('body').keyup(function(e) {
     if (e.which == 27) {
+      disabled = false;
       inBreak = false;
       start = new Date;
       tick();
@@ -76,7 +92,7 @@ body {
     background: #f33;
     color: #fff;
 }
-.break {
+.break, .disabled {
     background: #ddd;
     color: #777;
 }
